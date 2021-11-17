@@ -24,31 +24,6 @@ contract NFT is ERC721Enumerable, Ownable {
   }
 
 
-  function getBaseURI() public view returns(string memory){
-    return baseURI;
-  }
-  
-  function getBasedExtension() public view returns (string memory){
-  return baseExtension;
-  }
-
-  function getCost() public view returns (uint256) {
-    return cost;
-  }
-
-  function getMaxSupply() public view returns (uint256) {
-    return maxSupply;
-  }
-
-  function getMaxMintAmount() public view returns (uint256) {
-    return maxMintAmount;
-  }
-
-  function isPaused() public view returns(bool) {
-    return paused;
-  }
-
-
   // internal
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
@@ -57,8 +32,8 @@ contract NFT is ERC721Enumerable, Ownable {
   // public
   function mint(uint256 _mintAmount) public payable {
     uint256 supply = totalSupply();
-    require(!paused);
-    require(_mintAmount > 0);
+    require(!paused, "Sale has been paused");
+    require(_mintAmount > 0, "Must mint atleast 1 NFT");
     require(_mintAmount <= maxMintAmount);
     require(supply + _mintAmount <= maxSupply);
 
@@ -130,5 +105,29 @@ contract NFT is ERC721Enumerable, Ownable {
     (bool os, ) = payable(owner()).call{value: address(this).balance}("");
     require(os);
 
+  }
+
+  function getBaseURI() public view returns(string memory){
+    return baseURI;
+  }
+  
+  function getBasedExtension() public view returns (string memory){
+    return baseExtension;
+  }
+
+  function getCost() public view returns (uint256) {
+    return cost;
+  }
+
+  function getMaxSupply() public view returns (uint256) {
+    return maxSupply;
+  }
+
+  function getMaxMintAmount() public view returns (uint256) {
+    return maxMintAmount;
+  }
+
+  function isPaused() public view returns(bool) {
+    return paused;
   }
 }

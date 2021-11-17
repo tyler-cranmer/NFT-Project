@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.9.0;
 
+import "hardhat/console.sol"; // remove before deployment
+
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -34,11 +36,11 @@ contract NFT is ERC721Enumerable, Ownable {
     uint256 supply = totalSupply();
     require(!paused, "Sale has been paused");
     require(_mintAmount > 0, "Must mint atleast 1 NFT");
-    require(_mintAmount <= maxMintAmount);
-    require(supply + _mintAmount <= maxSupply);
+    require(_mintAmount <= maxMintAmount, "There is a limit on minting too many at a time!");
+    require(supply + _mintAmount <= maxSupply, "Minting this many would exceed supply!");
 
     if (msg.sender != owner()) {
-      require(msg.value >= cost * _mintAmount);
+      require(msg.value >= cost * _mintAmount, "Not enough ether sent!");
     }
 
     for (uint256 i = 1; i <= _mintAmount; i++) {
@@ -56,7 +58,9 @@ contract NFT is ERC721Enumerable, Ownable {
     for (uint256 i; i < ownerTokenCount; i++) {
       tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
     }
+    
     return tokenIds;
+    
   }
 
   function tokenURI(uint256 tokenId)

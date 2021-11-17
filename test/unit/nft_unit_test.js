@@ -5,6 +5,7 @@ const BN = require('bn.js');
 const {
   Contract,
 } = require('hardhat/internal/hardhat-network/stack-traces/model');
+const { hexValue } = require('@ethersproject/bytes');
 //Enable and inject BN dependency
 chai.use(require('chai-bn')(BN));
 
@@ -27,6 +28,7 @@ describe('Testing NFT Contract', () => {
     contract = await NFTContract.deployed();
   });
 
+  //Deployment Tests
   describe('Deployment', () => {
     it('Should set the right owner', async () => {
       expect(await contract.owner()).to.equal(owner.address);
@@ -61,6 +63,7 @@ describe('Testing NFT Contract', () => {
     });
   });
 
+  //Minting Tests
   describe('Minting', () => {
     it('Should Mint 5 NFTs', async () => {
       const mintAmount = 5;
@@ -71,18 +74,32 @@ describe('Testing NFT Contract', () => {
       expect(await newlyMintedAmount).to.equal(ownerBalance);
     });
 
+    it('Should return error when not enough ether has been sent', async () => {
+      const mintAmount = 5;
+      const params = {
+        value: ethers.utils.parseUnits('.01', 'ether'),
+      };
+      await expect(
+        contract.connect(addr1).mint(mintAmount, params)
+      ).to.be.revertedWith('Not enough ether sent!');
+    });
+
     it('Should return error for attemping to mint over limit', async () => {
       const newMaxMint = 10;
       const mintAmount = 11;
       await contract.setmaxMintAmount(newMaxMint);
 
-      expect(contract.mint(mintAmount)).to.be.reverted;
+      expect(contract.mint(mintAmount)).to.be.revertedWith(
+        'There is a limit on minting too many at a time!'
+      );
     });
 
     it('Should return error when trying to mint over max supply of 6969', async () => {
       const mintAmount = 7000;
       await contract.setmaxMintAmount(mintAmount);
-      expect(contract.mint(mintAmount)).to.be.reverted;
+      expect(contract.mint(mintAmount)).to.be.revertedWith(
+        'Minting this many would exceed supply!'
+      );
     });
 
     it('Should return error when trying to mint less than 1 NFT', async () => {
@@ -102,6 +119,7 @@ describe('Testing NFT Contract', () => {
     });
   });
 
+  // Set Functions
   describe('Set Functions', () => {
     before(async function () {
       NFTContract = await ethers.getContractFactory('NFT');
@@ -146,8 +164,43 @@ describe('Testing NFT Contract', () => {
       expect(await NFTContract.isPaused()).to.equal(true);
     });
   });
-});
 
-////////////////
-//
-///////////////////
+  // Wallet Of Owner Tests, tokenURI test, withdraw
+  describe('Other Functions', () => {
+    before(async function () {
+      NFTContract = await ethers.getContractFactory('NFT');
+      NFTContract = await NFTContract.deploy('cryptoes', 'cpt', '123456');
+      await NFTContract.deployed();
+    });
+    // it("Should return the Buyer's token IDs.", async () => {
+    //   const params = {
+    //     value: ethers.utils.parseUnits('.207', 'ether'),
+    //   };
+    //   await contract.connect(addr1).mint(3, params);
+    //   ids = await contract.walletOfOwner(addr1.address);
+    //   expect(ids).to.have.members([
+    //     {
+    //       _hex: hexValue(0x01),
+    //     },
+    //     {
+    //       _hex: hexValue(0x02)
+    //     },
+    //     {
+    //       _hex: hexValue(0x03),
+    //     },
+    //   ]);
+    // });
+
+    it("Should transfer funds to owner", async () => {
+      const params = {
+        value: ethers.utils.parseUnits('.345', 'ether'),
+      };
+      await contract.connect(addr1).mint(5, params)
+      const ownerBalance = await contract.balanceOf(owner.address);
+      await contract.withdraw()
+      expect(ownerBalance).to.equal(ethers.utils.parseUnits('.345', 'ether'));
+
+    })
+
+  });
+});

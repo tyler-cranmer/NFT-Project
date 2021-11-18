@@ -48,18 +48,24 @@ contract NFT is ERC721Enumerable, Ownable {
     }
   }
 
-  function walletOfOwner(address _owner)
+  function tokenIdOfOwner(address _owner)
     public
     view
     returns (uint256[] memory)
   {
-    uint256 ownerTokenCount = balanceOf(_owner);
-    uint256[] memory tokenIds = new uint256[](ownerTokenCount);
-    for (uint256 i; i < ownerTokenCount; i++) {
-      tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
-    }
+    uint256 tokenCount = balanceOf(_owner);
+
+    if (tokenCount == 0) {
+      return new uint256[](0);
+    } else {
+        uint256[] memory tokenIds = new uint256[](tokenCount);
     
-    return tokenIds;
+        for (uint256 i = 0; i < tokenCount; i++) {
+          tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
+        }
+
+        return tokenIds;
+      }  
     
   }
 
@@ -108,7 +114,6 @@ contract NFT is ERC721Enumerable, Ownable {
   function withdraw() public payable onlyOwner {
     (bool os, ) = payable(owner()).call{value: address(this).balance}("");
     require(os);
-
   }
 
   function getBaseURI() public view returns(string memory){
@@ -134,4 +139,11 @@ contract NFT is ERC721Enumerable, Ownable {
   function isPaused() public view returns(bool) {
     return paused;
   }
+
+  // function withdraw2() external onlyOwner {
+  //       uint256 balance = address(this).balance;
+  //       Address.sendValue(payable(owner()), balance);
+  //       console.log(balance);
+  //   }
+
 }

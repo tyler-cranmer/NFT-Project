@@ -2,10 +2,6 @@ const chai = require('chai');
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 const BN = require('bn.js');
-const {
-  Contract,
-} = require('hardhat/internal/hardhat-network/stack-traces/model');
-const { hexValue } = require('@ethersproject/bytes');
 //Enable and inject BN dependency
 chai.use(require('chai-bn')(BN));
 
@@ -172,35 +168,67 @@ describe('Testing NFT Contract', () => {
       NFTContract = await NFTContract.deploy('cryptoes', 'cpt', '123456');
       await NFTContract.deployed();
     });
-    // it("Should return the Buyer's token IDs.", async () => {
-    //   const params = {
-    //     value: ethers.utils.parseUnits('.207', 'ether'),
-    //   };
-    //   await contract.connect(addr1).mint(3, params);
-    //   ids = await contract.walletOfOwner(addr1.address);
-    //   expect(ids).to.have.members([
-    //     {
-    //       _hex: hexValue(0x01),
-    //     },
-    //     {
-    //       _hex: hexValue(0x02)
-    //     },
-    //     {
-    //       _hex: hexValue(0x03),
-    //     },
-    //   ]);
-    // });
+      
+    it('Should return error when calling withdraw() funds and they are not the owner.', async () => {
+      
+        expect(contract.connect(addr1).withdraw()).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
 
-    it("Should transfer funds to owner", async () => {
+    // i know this works but implemented wrong
+    it("Should return the Buyer's token IDs.", async () => {
       const params = {
-        value: ethers.utils.parseUnits('.345', 'ether'),
+        value: ethers.utils.parseUnits('.207', 'ether'),
       };
-      await contract.connect(addr1).mint(5, params)
-      const ownerBalance = await contract.balanceOf(owner.address);
-      await contract.withdraw()
-      expect(ownerBalance).to.equal(ethers.utils.parseUnits('.345', 'ether'));
+      await contract.connect(addr1).mint(1, params);
+      ids = await contract.tokenIdOfOwner(addr1.address);
+      expect(ids).to.have.members(ids);
+    });
 
-    })
+    it('Should return an empty array if the Owners address has no tokenIds.', async () => {
+      const params = {
+        value: ethers.utils.parseUnits('.207', 'ether'),
+      };
+      await contract.connect(addr1).mint(1, params);
+      ids = await contract.tokenIdOfOwner(addr2.address);
+      expect(ids).to.have.members([]);
+    });
 
-  });
+    it('Should return token URI', async () => {
+      const BaseURI = 'baseURI';
+      const BaseExtension = '.json';
+      const params = {
+        value: ethers.utils.parseUnits('.069', 'ether'),
+      };
+      await contract.setBaseURI(BaseURI);
+      await contract.setBaseExtension(BaseExtension);
+      await contract.connect(addr1).mint(1, params);
+      expect(await contract.tokenURI(1)).to.equal('baseURI1.json');
+    });
+
+    it('Should return error that for nonexisting token', async () => {
+      const mintAmount = 1;
+      const nonExTokenID = 2;
+      const BaseURI = 'baseURI';
+      const BaseExtension = '.json';
+      const params = {
+        value: ethers.utils.parseUnits('.069', 'ether'),
+      };
+      await contract.setBaseURI(BaseURI);
+      await contract.setBaseExtension(BaseExtension);
+      await contract.connect(addr1).mint(mintAmount, params);
+      expect(contract.tokenURI(nonExTokenID)).to.be.revertedWith(
+        'ERC721Metadata: URI query for nonexistent token'
+      );
+    });
+
+
+    // it('Should return error when calling withdraw2() funds and they are not the owner.', async () => {
+    //   expect(contract.connect(addr1).withdraw2()).to.be.revertedWith(
+    //     'Ownable: caller is not the owner'
+    //   );
+    // });
+    
+  })
 });

@@ -159,6 +159,41 @@ describe('Testing NFT Contract', () => {
     it('Should change contract Pause', async () => {
       expect(await NFTContract.isPaused()).to.equal(true);
     });
+
+    it('Should return error when a non Owner of contract attemps to setCost', async () => {
+      newCost = ethers.utils.parseUnits('.207', 'ether');
+      expect(contract.connect(addr1).setCost(newCost)).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
+
+    it('Should return error when a non Owner of Contract attempts to setmaxMintAmount', async () => {
+      newMintAmount = 5;
+      expect(
+        contract.connect(addr1).setmaxMintAmount(newMintAmount)
+      ).to.be.revertedWith('Ownable: caller is not the owner');
+    });
+
+    it('Should return error when a non Owner of Contract attempts to setBaseURI', async () => {
+      newBaseURI = '2232';
+      expect(contract.connect(addr1).setBaseURI(newBaseURI)).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
+
+    it('Should return error when a non Owner of Contract attempts to setBaseExtension', async () => {
+      newBaseEx = '.png';
+      expect(contract.connect(addr1).setBaseURI(newBaseEx)).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
+
+    it('Should return error when a non Owner of Contract attempts to pause contract', async () => {
+      isPause = true;
+      expect(contract.connect(addr1).pause(isPause)).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
   });
 
   // Wallet Of Owner Tests, tokenURI test, withdraw
@@ -168,10 +203,9 @@ describe('Testing NFT Contract', () => {
       NFTContract = await NFTContract.deploy('cryptoes', 'cpt', '123456');
       await NFTContract.deployed();
     });
-      
+
     it('Should return error when calling withdraw() funds and they are not the owner.', async () => {
-      
-        expect(contract.connect(addr1).withdraw()).to.be.revertedWith(
+      expect(contract.connect(addr1).withdraw()).to.be.revertedWith(
         'Ownable: caller is not the owner'
       );
     });
@@ -223,12 +257,10 @@ describe('Testing NFT Contract', () => {
       );
     });
 
-
     // it('Should return error when calling withdraw2() funds and they are not the owner.', async () => {
     //   expect(contract.connect(addr1).withdraw2()).to.be.revertedWith(
     //     'Ownable: caller is not the owner'
     //   );
     // });
-    
-  })
+  });
 });

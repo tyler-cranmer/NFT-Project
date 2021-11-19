@@ -17,62 +17,63 @@ const KOVAN_RPC_URL =
 const MNEMONIC = process.env.MNEMONIC || 'your mnemonic';
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 // optional
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
 
 module.exports = {
   defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
+      accounts: {},
       // // If you want to do some forking, uncomment this
       // forking: {
       //   url: MAINNET_RPC_URL
       // }
     },
     localhost: {},
-    kovan: {
-      url: KOVAN_RPC_URL,
-      // accounts: [PRIVATE_KEY],
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-      saveDeployments: true,
-    },
-    rinkeby: {
-      url: RINKEBY_RPC_URL,
-      // accounts: [PRIVATE_KEY],
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-      saveDeployments: true,
-    },
+    // kovan: {
+    //   url: KOVAN_RPC_URL,
+    //   // accounts: [TEST_PRIVATE_KEY],
+    //   accounts: {
+    //     mnemonic: MNEMONIC,
+    //   },
+    //   saveDeployments: true,
+    // },
+    // rinkeby: {
+    //   url: RINKEBY_RPC_URL,
+    //   // accounts: [TEST_PRIVATE_KEY],
+    //   accounts: {
+    //     mnemonic: MNEMONIC,
+    //   },
+    //   saveDeployments: true,
+    // },
     ganache: {
       url: 'http://localhost:8545',
       accounts: {
         mnemonic: MNEMONIC,
       },
     },
-    mainnet: {
-      url: MAINNET_RPC_URL,
-      // accounts: [PRIVATE_KEY],
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-      saveDeployments: true,
-    },
-    polygon: {
-      url: 'https://rpc-mainnet.maticvigil.com/',
-      // accounts: [PRIVATE_KEY],
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-      saveDeployments: true,
-    },
+    // mainnet: {
+    //   url: MAINNET_RPC_URL,
+    //   // accounts: [PRIVATE_KEY],
+    //   accounts: {
+    //     mnemonic: MNEMONIC,
+    //   },
+    //   saveDeployments: true,
+    // },
+    // polygon: {
+    //   url: 'https://rpc-mainnet.maticvigil.com/',
+    //   // accounts: [PRIVATE_KEY],
+    //   accounts: {
+    //     mnemonic: MNEMONIC,
+    //   },
+    //   saveDeployments: true,
+    // },
   },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: ETHERSCAN_API_KEY,
-  },
+  // etherscan: {
+  //   // Your API key for Etherscan
+  //   // Obtain one at https://etherscan.io/
+  //   apiKey: ETHERSCAN_API_KEY,
+  // },
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer

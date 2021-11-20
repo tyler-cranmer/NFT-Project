@@ -12,23 +12,27 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
 
   log('--------------------------------------');
+  // deploys contract
   const NFFeet = await deploy(contract_name, {
-    // deploys contract
     from: deployer,
-    args:['NFFeet', 'Feet', '123456'],
+    args: ['NFFeet', 'Feet', '123456'],
     log: true,
   });
 
   log(`You deployed a NFT contract to ${NFFeet.address}`);
-  log(`The deployer address: ${deployer}`)
+  log(`The deployer address: ${deployer}`);
 
   const factory = await ethers.getContractFactory(contract_name); //grabs the NFFeet contract factory.
   const accounts = await hre.ethers.getSigners(); //grabs an account.
   const signer = accounts[0];
 
-  const tNFTcontract = new ethers.Contract(NFFeet.address, factory.interface, signer )
+  const tNFTcontract = new ethers.Contract(
+    NFFeet.address,
+    factory.interface,
+    signer
+  );
 
-  log(`This is the accounts entity: ${accounts}`)
+  log(`This is the accounts entity: ${accounts}`);
   log(`This is the Signer entity: ${signer}`);
 
   const networkName = networkConfig[chainId]['name'];

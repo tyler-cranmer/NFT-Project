@@ -204,6 +204,18 @@ describe('Testing NFT Contract', () => {
       await factory.deployed();
     });
 
+    it('Should transfer NFT balance to owner.', async () => {
+      const params = {
+        value: ethers.utils.parseUnits('.069', 'ether'),
+      };
+      await nftContract.connect(addr1).mint(1, params);
+      
+      await expect(await nftContract.withdraw()).to.changeEtherBalance(
+        owner,
+        ethers.utils.parseUnits('.069', 'ether')
+      );
+    })
+
     it('Should return error when calling withdraw() funds and they are not the owner.', async () => {
       expect(nftContract.connect(addr1).withdraw()).to.be.revertedWith(
         'Ownable: caller is not the owner'

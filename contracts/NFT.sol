@@ -110,11 +110,6 @@ contract NFT is ERC721Enumerable, Ownable {
   function pause(bool _state) public onlyOwner {
     paused = _state;
   }
- 
-  function withdraw() public payable onlyOwner {
-    (bool os, ) = payable(owner()).call{value: address(this).balance}("");
-    require(os);
-  }
 
   function getBaseURI() public view returns(string memory){
     return baseURI;
@@ -140,10 +135,21 @@ contract NFT is ERC721Enumerable, Ownable {
     return paused;
   }
 
-  // function withdraw2() external onlyOwner {
+  // function withdraw() external onlyOwner {
   //       uint256 balance = address(this).balance;
   //       Address.sendValue(payable(owner()), balance);
   //       console.log(balance);
   //   }
+
+    // function withdraw() public payable onlyOwner {
+  //   (bool os, ) = payable(owner()).call{value: address(this).balance}("");
+  //   require(os);
+  // }
+  
+
+  function withdraw() external onlyOwner {
+    address payable to = payable(owner());
+    to.transfer(address(this).balance);
+  }
 
 }

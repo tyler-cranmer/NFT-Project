@@ -12,10 +12,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
 
   log('--------------------------------------');
-  // deploys contract
+  // deploys contract 
   const NFFeet = await deploy(contract_name, {
     from: deployer,
-    args: ['NFFeet', 'Feet', '123456'],
+    args: [
+      'NFTname',
+      'nme',
+      'ipfs://QmSXYMJqC1UBwJ3ZRVWThc9eoV5y2UvDNxnCbxjSUK8Lut/', // -> ipfs://{metadata CID}/ <-
+    ], 
     log: true,
   });
 

@@ -35,7 +35,9 @@ describe('Testing NFT Contract', () => {
     });
 
     it('Should set the right Initial baseExtension to .json', async function () {
-      expect((await nftContract.getBasedExtension()).toString()).to.equal('.json');
+      expect((await nftContract.getBasedExtension()).toString()).to.equal(
+        '.json'
+      );
     });
 
     it('Should set the Initial Cost Should be 69000000000000000 wei ', async function () {
@@ -141,15 +143,11 @@ describe('Testing NFT Contract', () => {
     });
 
     it('Should set BaseExtension', async () => {
-      expect((await factory.getBasedExtension()).toString()).to.equal(
-        '.png'
-      );
+      expect((await factory.getBasedExtension()).toString()).to.equal('.png');
     });
 
     it('Should set Cost', async function () {
-      expect((await factory.getCost()).toString()).to.equal(
-        '500000000000000'
-      );
+      expect((await factory.getCost()).toString()).to.equal('500000000000000');
     });
 
     it('Should set Max Mint Amount', async () => {
@@ -176,16 +174,16 @@ describe('Testing NFT Contract', () => {
 
     it('Should return error when a non Owner of nftContract attempts to setBaseURI', async () => {
       newBaseURI = '2232';
-      expect(nftContract.connect(addr1).setBaseURI(newBaseURI)).to.be.revertedWith(
-        'Ownable: caller is not the owner'
-      );
+      expect(
+        nftContract.connect(addr1).setBaseURI(newBaseURI)
+      ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
     it('Should return error when a non Owner of nftContract attempts to setBaseExtension', async () => {
       newBaseEx = '.png';
-      expect(nftContract.connect(addr1).setBaseURI(newBaseEx)).to.be.revertedWith(
-        'Ownable: caller is not the owner'
-      );
+      expect(
+        nftContract.connect(addr1).setBaseURI(newBaseEx)
+      ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
     it('Should return error when a non Owner of nftContract attempts to pause nftContract', async () => {
@@ -209,12 +207,12 @@ describe('Testing NFT Contract', () => {
         value: ethers.utils.parseUnits('.069', 'ether'),
       };
       await nftContract.connect(addr1).mint(1, params);
-      
+
       await expect(await nftContract.withdraw()).to.changeEtherBalance(
         owner,
         ethers.utils.parseUnits('.069', 'ether')
       );
-    })
+    });
 
     it('Should return error when calling withdraw() funds and they are not the owner.', async () => {
       expect(nftContract.connect(addr1).withdraw()).to.be.revertedWith(
@@ -268,12 +266,5 @@ describe('Testing NFT Contract', () => {
         'ERC721Metadata: URI query for nonexistent token'
       );
     });
-
-    // it('Should return error when calling withdraw2() funds and they are not the owner.', async () => {
-    //   expect(nftContract.connect(addr1).withdraw2()).to.be.revertedWith(
-    //     'Ownable: caller is not the owner'
-    //   );
-    // });
   });
 });
-

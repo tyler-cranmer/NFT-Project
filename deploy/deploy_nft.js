@@ -12,14 +12,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
 
   log('--------------------------------------');
-  // deploys contract 
+  // deploys contract
   const NFFeet = await deploy(contract_name, {
     from: deployer,
     args: [
       'NFTname',
       'nme',
       'ipfs://QmSXYMJqC1UBwJ3ZRVWThc9eoV5y2UvDNxnCbxjSUK8Lut/', // -> ipfs://{metadata CID}/ <-
-    ], 
+    ],
     log: true,
   });
 
@@ -36,16 +36,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     signer
   );
 
-  log(`This is the accounts entity: ${accounts}`);
-  log(`This is the Signer entity: ${signer}`);
-
   const networkName = networkConfig[chainId]['name'];
   log(
-    `Verify with: \n npx hardhat verify --network ${networkName} ${NFFeet.address}`
+    `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address} "${NFFeet.args[0]}" "${NFFeet.args[1]}" "${NFFeet.args[2]}"`
   );
-
-  let transactionReponse = await tNFTcontract.mint(1); //calls the mint function
-  let receipt = await transactionReponse.wait(1); //wait 1 block for transaction to go through.
-  log('You created an NFT');
-  log(`you can view the tokenURI here ${await tNFTcontract.tokenURI(1)}`);
 };

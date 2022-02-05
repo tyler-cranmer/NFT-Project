@@ -23,6 +23,19 @@ module.exports = {
       accounts: {},
     },
     localhost: {},
+    ganache: {
+      url: 'http://localhost:8545',
+      accounts: {
+        mnemonic: MNEMONIC,
+      },
+    },
+    mainnet: {
+      url: MAINNET_RPC_URL,
+      accounts: {
+        mnemonic: MNEMONIC,
+      },
+      saveDeployments: true,
+    },
     rinkeby: {
       url: RINKEBY_RPC_URL,
       accounts: {
@@ -30,20 +43,6 @@ module.exports = {
       },
       saveDeployments: true,
     },
-    ganache: {
-      url: 'http://localhost:8545',
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-    },
-    // mainnet: {
-    //   url: MAINNET_RPC_URL,
-    //   // accounts: [PRIVATE_KEY],
-    //   accounts: {
-    //     mnemonic: MNEMONIC,
-    //   },
-    //   saveDeployments: true,
-    // },
   },
   etherscan: {
     // Your API key for Etherscan

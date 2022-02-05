@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.9.0;
 
-import 'hardhat/console.sol'; // remove before deployment
-
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
@@ -67,7 +65,6 @@ contract NFT is ERC721Enumerable, Ownable {
       for (uint256 i = 0; i < tokenCount; i++) {
         tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
       }
-
       return tokenIds;
     }
   }
@@ -136,17 +133,6 @@ contract NFT is ERC721Enumerable, Ownable {
   function isPaused() public view returns (bool) {
     return paused;
   }
-
-  // function withdraw() external onlyOwner {
-  //       uint256 balance = address(this).balance;
-  //       Address.sendValue(payable(owner()), balance);
-  //       console.log(balance);
-  //   }
-
-  // function withdraw() public payable onlyOwner {
-  //   (bool os, ) = payable(owner()).call{value: address(this).balance}("");
-  //   require(os);
-  // }
 
   function withdraw() external onlyOwner {
     address payable to = payable(owner());

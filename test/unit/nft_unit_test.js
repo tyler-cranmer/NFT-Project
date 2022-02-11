@@ -17,11 +17,9 @@ describe('Testing NFT Contract', () => {
 
   beforeEach(async () => {
     factory = await ethers.getContractFactory('NFT');
-    factory = await factory.deploy('cryptoes', 'cpt', '123456');
+    nftContract = await factory.deploy('cryptoes', 'cpt', '123456');
 
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
-
-    nftContract = await factory.deployed();
   });
 
   //Deployment Tests
@@ -109,7 +107,7 @@ describe('Testing NFT Contract', () => {
 
     it('Should return error when trying to mint and nftContract is paused', async () => {
       const t = true;
-      await factory.pause(t);
+      await nftContract.pause(t);
       const mintAmount = 1;
       expect(nftContract.mint(mintAmount)).to.be.revertedWith(
         'Sale has been paused'
@@ -119,43 +117,41 @@ describe('Testing NFT Contract', () => {
 
   // Set Functions
   describe('Set Functions', () => {
-    before(async function () {
-      factory = await ethers.getContractFactory('NFT');
-      factory = await factory.deploy('cryptoes', 'cpt', '123456');
-      await factory.deployed();
-    });
-
     beforeEach(async function () {
       const newCost = new ethers.BigNumber.from(500000000000000);
       let newMaxMint = 5;
       let newBaseURI = '654321';
       let newBaseExtension = '.png';
       let p = true;
-      await factory.setCost(newCost);
-      await factory.setmaxMintAmount(newMaxMint);
-      await factory.setBaseURI(newBaseURI);
-      await factory.setBaseExtension(newBaseExtension);
-      await factory.pause(p);
+      await nftContract.setCost(newCost);
+      await nftContract.setmaxMintAmount(newMaxMint);
+      await nftContract.setBaseURI(newBaseURI);
+      await nftContract.setBaseExtension(newBaseExtension);
+      await nftContract.pause(p);
     });
 
     it('Should set BaseURI', async () => {
-      expect((await factory.getBaseURI()).toString()).to.equal('654321');
+      expect((await nftContract.getBaseURI()).toString()).to.equal('654321');
     });
 
     it('Should set BaseExtension', async () => {
-      expect((await factory.getBasedExtension()).toString()).to.equal('.png');
+      expect((await nftContract.getBasedExtension()).toString()).to.equal(
+        '.png'
+      );
     });
 
     it('Should set Cost', async function () {
-      expect((await factory.getCost()).toString()).to.equal('500000000000000');
+      expect((await nftContract.getCost()).toString()).to.equal(
+        '500000000000000'
+      );
     });
 
     it('Should set Max Mint Amount', async () => {
-      expect((await factory.getMaxMintAmount()).toString()).to.equal('5');
+      expect((await nftContract.getMaxMintAmount()).toString()).to.equal('5');
     });
 
     it('Should change nftContract Pause', async () => {
-      expect(await factory.isPaused()).to.equal(true);
+      expect(await nftContract.isPaused()).to.equal(true);
     });
 
     it('Should return error when a non Owner of nftContract attemps to setCost', async () => {
@@ -196,11 +192,6 @@ describe('Testing NFT Contract', () => {
 
   // Wallet Of Owner Tests, tokenURI test, withdraw
   describe('Other Functions', () => {
-    before(async function () {
-      factory = await ethers.getContractFactory('NFT');
-      factory = await factory.deploy('cryptoes', 'cpt', '123456');
-      await factory.deployed();
-    });
 
     it('Should transfer NFT balance to owner.', async () => {
       const params = {

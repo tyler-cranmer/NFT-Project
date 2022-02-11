@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import './@rarible/royalties/contracts/impl/RoyaltiesV2Impl.sol';
+import './@rarible/royalties/contracts/LibPart.sol';
+import './@rarible/royalties/contracts/LibRoyaltiesV2.sol';
 
-contract NFT is ERC721Enumerable, Ownable {
+contract NFT is ERC721Enumerable, Ownable, RoyaltiesV2Impl {
   using Strings for uint256;
 
   string baseURI;
@@ -137,5 +140,29 @@ contract NFT is ERC721Enumerable, Ownable {
   function withdraw() external onlyOwner {
     address payable to = payable(owner());
     to.transfer(address(this).balance);
+  }
+
+  function setRoyalties(
+    uint256 _tokenId,
+    address payable _royaltiesRecipientAddress,
+    uint96 _percentageBasisPoints
+  ) public onlyOwner {
+    LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+    _royalties[0].value = _percentageBasisPoints;
+    _royalties[0].account = _royaltiesRecipientAddress;
+    _saveRoyalties(_tokenId, _royalties);
+  }
+
+  function supportsInterface(bytes4 interfaceId)
+    public
+    view
+    virtual
+    override(ERC721)
+    returns (bool)
+  {
+    if (interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
+      return true;
+    }
+    return super.supportsInterface(interfaceId);
   }
 }

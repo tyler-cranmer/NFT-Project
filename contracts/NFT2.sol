@@ -67,49 +67,7 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
       return ownedTokenIds;
   }
 
-  // public
-  function mint(uint256 _mintAmount) public payable {
-    uint256 supply = totalSupply();
-    require(!paused, 'Sale has been paused');
-    require(_mintAmount > 0, 'Must mint atleast 1 NFT');
-    require(
-      _mintAmount <= maxMintAmount,
-      'There is a limit on minting too many at a time!'
-    );
-    require(
-      supply + _mintAmount <= maxSupply,
-      'Minting this many would exceed supply!'
-    );
-
-    if (msg.sender != owner()) {
-      require(msg.value >= cost * _mintAmount, 'Not enough ether sent!');
-    }
-
-    for (uint256 i = 1; i <= _mintAmount; i++) {
-      _safeMint(msg.sender, supply + i);
-    }
-  }
-
-  function tokenIdOfOwner(address _owner)
-    public
-    view
-    returns (uint256[] memory)
-  {
-    uint256 ownerTokenCount = balanceOf(_owner);
-
-    if (ownerTokenCount == 0) {
-      return new uint256[](0);
-    } else {
-      uint256[] memory tokenIds = new uint256[](ownerTokenCount);
-
-      for (uint256 i = 0; i < ownerTokenCount; i++) {
-        tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
-      }
-      return tokenIds;
-    }
-  }
-
-  function tokenURI(uint256 tokenId)
+  function tokenURI(uint256 _tokenId)
     public
     view
     virtual
@@ -117,7 +75,7 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
     returns (string memory)
   {
     require(
-      _exists(tokenId),
+      _exists(_tokenId),
       'ERC721Metadata: URI query for nonexistent token'
     );
 
@@ -125,7 +83,7 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
     return
       bytes(currentBaseURI).length > 0
         ? string(
-          abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension)
+          abi.encodePacked(currentBaseURI, tokenId.toString(), uriSuffix)
         )
         : '';
   }
@@ -138,24 +96,24 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
     maxMintAmount = _newmaxMintAmount;
   }
 
-  function setBaseURI(string memory _newBaseURI) public onlyOwner {
-    baseURI = _newBaseURI;
+  function setUriPrefix(string memory _uriPrefix) public onlyOwner {
+    uriPrefix = _uriPrefix;
   }
 
-  function setBaseExtension(string memory _newBaseExtension) public onlyOwner {
-    baseExtension = _newBaseExtension;
+  function setUriSuffix(string memory _uriSuffix) public onlyOwner {
+    uriSuffix = _uriSuffix;
   }
 
-  function pause(bool _state) public onlyOwner {
+  function setPause(bool _state) public onlyOwner {
     paused = _state;
   }
 
-  function getBaseURI() public view returns (string memory) {
-    return baseURI;
+  function getUriPrefix() public view returns (string memory) {
+    return uriPrefix;
   }
 
-  function getBasedExtension() public view returns (string memory) {
-    return baseExtension;
+  function getUriSuffix() public view returns (string memory) {
+    return uriSuffix;
   }
 
   function getCost() public view returns (uint256) {
@@ -177,4 +135,15 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
   function withdraw() external onlyOwner {
     address payable to = payable(owner());
     to.transfer(address(this).balance);
+  }
+
+  function _mintLoop(address _reciever, uint256 _mintAmount) internal {
+    for (uint 256 i = 0; i <_mintAmount; i++){
+      supply.increment();
+      _safeMint(_reciever, supply.current());
+    }
+  }
+
+  function _baseURI() internal view virtual override returns (string memory){
+    return uriPrefix;
   }

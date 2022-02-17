@@ -50,12 +50,6 @@ describe('Testing NFT2 Contract', () => {
     it('Should return false for paused variable', async () => {
       expect(await Contract.isPaused()).to.equal(false);
     });
-
-    // it(
-    //   'Should return merkleRoot of 0x18915a31277dd7b335f2ff24cf05323fc528fa2fb8b59c9af040d4cdf1bcf6cb', async () => {
-
-    //   }
-    // );
   });
 
   describe('Normal Mint', () => {
@@ -107,11 +101,11 @@ describe('Testing NFT2 Contract', () => {
     });
 
     it('Should return error message when not enough ether has been sent', async () => {
-      const mintAmount = 1;
+      const mintAmount = 2;
       const params = {
         value: ethers.utils.parseUnits('.01', 'ether'),
       };
-      await expect(
+      expect(
         Contract.connect(addr1).mint(mintAmount, params)
       ).to.be.revertedWith('Insufficient funds!');
     });
@@ -165,19 +159,17 @@ describe('Testing NFT2 Contract', () => {
   describe('White List Minting', async () => {
     it('Should accept address1 into white listing', async () => {
       const merkleProof = [
-        "0xe05615224f39bd1447c1428cc152b9b5727b5acaa441bf989ea920aeae708a7c",
-        "0xb6bbf4b5b9539f0c2c0f0ccb9f81e257ca4457c650882a533ae8f00291f3bbc9",
-        "0xfeb4134edd0133410cc4647c0756162847ce8278713c5ca46ca7bf7564af1c57",
+        "0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94",
+        "0x718e098c1cdb3bc5887a4a4e2eb5474dd63a1a70ea7e55ea47267fb2fd5e9852",
       ];
 
       const params = {
         value: ethers.utils.parseUnits('.069', 'ether'),
       };
-
-      await Contract.connect(addr1).whiteListMint(merkleProof, 1, params)
-      const ownerBalance = await Contract.balanceOf(addr1.address);
-      const newlyMintedAmount = await Contract.totalSupply();
-      expect(await newlyMintedAmount).to.equal(ownerBalance)
+      await Contract.connect(addr1).whiteListMint(merkleProof, 1, params);
+      const OwnerBalance = await Contract.balanceOf(addr2.address);
+      const newMintNumber = await Contract.totalSupply();
+      expect(OwnerBalance).to.equal(newMintNumber);
     });
   });
 
@@ -314,6 +306,8 @@ describe('Testing NFT2 Contract', () => {
       expect(Contract.tokenURI(nonExTokenId)).to.be.revertedWith(
         'ERC721Metadata: URI query for nonexistent token'
       );
+      console.log(addr1.address);
+      console.log(addr2.address);
     });
   });
 });

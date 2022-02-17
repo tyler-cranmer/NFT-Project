@@ -20,7 +20,7 @@ contract NFT2 is ERC721, Ownable {
   bool public paused = false;
 
   bytes32 public merkleRoot =
-    0xcc905fdd59bc3bbb7d4866a642d47face8ffda945218e44e965f4222a9c2a00e; //NEED TO ADD
+    0xb01c8d2c189a0bf9b45e2f10ba27479dad70041e840155aef75aa282e09913f7; //NEED TO ADD
   mapping(address => bool) public whitelistClaimed;
 
   constructor() ERC721('NAME', 'SYMBOL') {
@@ -63,13 +63,11 @@ contract NFT2 is ERC721, Ownable {
     require(!whitelistClaimed[msg.sender], 'Address already claimed');
 
     bytes32 leaf = keccak256(abi.encode(msg.sender));
-
     require(
       MerkleProof.verify(_merkleProof, merkleRoot, leaf),
       'Invalide Merkle Proof'
     );
     whitelistClaimed[msg.sender] = true;
-
     _mintLoop(msg.sender, _mintAmount);
   }
 

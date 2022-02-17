@@ -1,70 +1,108 @@
-/ SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/utils/Counters.sol'
-import './@rarible/royalties/contracts/impl/RoyaltiesV2Impl.sol';
-import './@rarible/royalties/contracts/LibPart.sol';
-import './@rarible/royalties/contracts/LibRoyaltiesV2.sol';
+import '@openzeppelin/contracts/utils/Counters.sol';
+import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 
-contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
+contract NFT2 is ERC721, Ownable {
   using Strings for uint256;
   using Counters for Counters.Counter;
-  
+
   Counters.Counter private supply;
 
-
-  string public uriPrefix = "";
-  string public uriSuffix = ".json";
+  string public uriPrefix = '';
+  string public uriSuffix = '.json';
   uint256 public cost = 0.069 ether;
   uint256 public maxSupply = 6969;
   uint256 public maxMintAmount = 15;
   bool public paused = false;
 
-  constructor() ERC721("NAME", "SYMBOL") {
-    setBaseURI(_initBaseURI); // NEED to change
+  bytes32 public merkleRoot =
+    0xcc905fdd59bc3bbb7d4866a642d47face8ffda945218e44e965f4222a9c2a00e; //NEED TO ADD
+  mapping(address => bool) public whitelistClaimed;
+
+  constructor() ERC721('NAME', 'SYMBOL') {
+    setUriPrefix(uriPrefix); //NEED TO CHANGE
   }
 
-  modifier mintCompliance(uint256 _minAmount) {
-      require(_mintAmount > 0 && _mintAmount <= maxMintAmount, "Invalid mint amount.");
-      require(supply.current() + _mintAmount <= maxSupply, "Max supply exceeded.");
-      _;
+  modifier mintCompliance(uint256 _mintAmount) {
+    require(
+      _mintAmount > 0 && _mintAmount <= maxMintAmount,
+      'Invalid mint amount.'
+    );
+    require(
+      supply.current() + _mintAmount <= maxSupply,
+      'Max supply exceeded.'
+    );
+    _;
   }
 
   function totalSupply() public view returns (uint256) {
-      return supply.current()
+    return supply.current();
   }
 
-  function mint(uint256 _mintAmount) public payable mintCompliance(_mintAmount) {
-      require(!paused, "The contract is paused.");
-      require(msg.value >= cost * _mintAmount, "Insufficient funds!");
+  function mint(uint256 _mintAmount)
+    public
+    payable
+    mintCompliance(_mintAmount)
+  {
+    require(!paused, 'The contract is paused.');
+    require(msg.value >= cost * _mintAmount, 'Insufficient funds!');
 
-      _mintLoop(msg.sender, _mintAmount);
+    _mintLoop(msg.sender, _mintAmount);
   }
 
-  function mintForAddress(uint256 _mintAmount, address _reciever) public mintCompliance(_mintAmount) onlyOwner {
-      _mintLoop(_reciever, _mintAmount);
+  function whiteListMint(bytes32[] calldata _merkleProof, uint256 _mintAmount)
+    public
+    payable
+    mintCompliance(_mintAmount)
+  {
+    require(!paused, 'The contract is paused');
+    require(!whitelistClaimed[msg.sender], 'Address already claimed');
+
+    bytes32 leaf = keccak256(abi.encode(msg.sender));
+
+    require(
+      MerkleProof.verify(_merkleProof, merkleRoot, leaf),
+      'Invalide Merkle Proof'
+    );
+    whitelistClaimed[msg.sender] = true;
+
+    _mintLoop(msg.sender, _mintAmount);
   }
 
-  function walletOfOwner(address _owner) public view returns (uint256[] memory){
-      uint256 ownerTokenCount = balanceOf(_owner);
-      uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
-      uint256 currentTokenId = 1;
-      uint256 ownedTokenIndex = 0;
+  function zeroCostMint(uint256 _mintAmount, address _reciever)
+    public
+    mintCompliance(_mintAmount)
+    onlyOwner
+  {
+    _mintLoop(_reciever, _mintAmount);
+  }
 
-      while (ownedTokenIndex < ownerTokenCount && currentTokenId <= maxSupply) {
-          address currentTokenOwner = ownerOf(currentTokenId);
+  function walletOfOwner(address _owner)
+    public
+    view
+    returns (uint256[] memory)
+  {
+    uint256 ownerTokenCount = balanceOf(_owner);
+    uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
+    uint256 currentTokenId = 1;
+    uint256 ownedTokenIndex = 0;
 
-          if(currentTokenOwner == _owner) {
-              ownedtokenIds[ownedTokenIndex] = currentTokenId;
-              ownedTokenIndex++;
-          }
+    while (ownedTokenIndex < ownerTokenCount && currentTokenId <= maxSupply) {
+      address currentTokenOwner = ownerOf(currentTokenId);
 
-          currentTokenId++;
+      if (currentTokenOwner == _owner) {
+        ownedTokenIds[ownedTokenIndex] = currentTokenId;
+        ownedTokenIndex++;
       }
 
-      return ownedTokenIds;
+      currentTokenId++;
+    }
+
+    return ownedTokenIds;
   }
 
   function tokenURI(uint256 _tokenId)
@@ -83,7 +121,7 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
     return
       bytes(currentBaseURI).length > 0
         ? string(
-          abi.encodePacked(currentBaseURI, tokenId.toString(), uriSuffix)
+          abi.encodePacked(currentBaseURI, _tokenId.toString(), uriSuffix)
         )
         : '';
   }
@@ -138,12 +176,13 @@ contract NFT is ERC721, Ownable, RoyaltiesV2Impl {
   }
 
   function _mintLoop(address _reciever, uint256 _mintAmount) internal {
-    for (uint 256 i = 0; i <_mintAmount; i++){
+    for (uint256 i = 0; i < _mintAmount; i++) {
       supply.increment();
       _safeMint(_reciever, supply.current());
     }
   }
 
-  function _baseURI() internal view virtual override returns (string memory){
+  function _baseURI() internal view virtual override returns (string memory) {
     return uriPrefix;
   }
+}

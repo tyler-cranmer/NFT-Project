@@ -192,7 +192,6 @@ describe('Testing NFT Contract', () => {
 
   // Wallet Of Owner Tests, tokenURI test, withdraw
   describe('Other Functions', () => {
-
     it('Should transfer NFT balance to owner.', async () => {
       const params = {
         value: ethers.utils.parseUnits('.069', 'ether'),

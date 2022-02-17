@@ -3,11 +3,8 @@ pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import './@rarible/royalties/contracts/impl/RoyaltiesV2Impl.sol';
-import './@rarible/royalties/contracts/LibPart.sol';
-import './@rarible/royalties/contracts/LibRoyaltiesV2.sol';
 
-contract NFT is ERC721Enumerable, Ownable, RoyaltiesV2Impl {
+contract NFT is ERC721Enumerable, Ownable {
   using Strings for uint256;
 
   string baseURI;
@@ -142,27 +139,27 @@ contract NFT is ERC721Enumerable, Ownable, RoyaltiesV2Impl {
     to.transfer(address(this).balance);
   }
 
-  function setRoyalties(
-    uint256 _tokenId,
-    address payable _royaltiesRecipientAddress,
-    uint96 _percentageBasisPoints
-  ) public onlyOwner {
-    LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-    _royalties[0].value = _percentageBasisPoints;
-    _royalties[0].account = _royaltiesRecipientAddress;
-    _saveRoyalties(_tokenId, _royalties);
-  }
+  // function setRoyalties(
+  //   uint256 _tokenId,
+  //   address payable _royaltiesRecipientAddress,
+  //   uint96 _percentageBasisPoints
+  // ) public onlyOwner {
+  //   LibPart.Part[] memory _royalties = new LibPart.Part[](1);
+  //   _royalties[0].value = _percentageBasisPoints;
+  //   _royalties[0].account = _royaltiesRecipientAddress;
+  //   _saveRoyalties(_tokenId, _royalties);
+  // }
 
-  function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    virtual
-    override(ERC721)
-    returns (bool)
-  {
-    if (interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
-      return true;
-    }
-    return super.supportsInterface(interfaceId);
-  }
+  // function supportsInterface(bytes4 interfaceId)
+  //   public
+  //   view
+  //   virtual
+  //   override(ERC721)
+  //   returns (bool)
+  // {
+  //   if (interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
+  //     return true;
+  //   }
+  //   return super.supportsInterface(interfaceId);
+  // }
 }

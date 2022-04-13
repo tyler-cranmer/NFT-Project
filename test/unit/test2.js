@@ -14,7 +14,7 @@ describe('Testing NFT2 Contract', () => {
   let addrs;
 
   beforeEach(async () => {
-    factory = await ethers.getContractFactory('NFT2');
+    factory = await ethers.getContractFactory('NFF33T');
     Contract = await factory.deploy();
 
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
@@ -159,17 +159,30 @@ describe('Testing NFT2 Contract', () => {
   describe('White List Minting', async () => {
     it('Should accept address1 into white listing', async () => {
       const merkleProof = [
-        "0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94",
-        "0x718e098c1cdb3bc5887a4a4e2eb5474dd63a1a70ea7e55ea47267fb2fd5e9852",
+        '0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94',
       ];
 
       const params = {
         value: ethers.utils.parseUnits('.069', 'ether'),
       };
       await Contract.connect(addr1).whiteListMint(merkleProof, 1, params);
-      const OwnerBalance = await Contract.balanceOf(addr2.address);
+      const OwnerBalance = await Contract.balanceOf(addr1.address);
       const newMintNumber = await Contract.totalSupply();
       expect(OwnerBalance).to.equal(newMintNumber);
+    });
+
+    it('Should return Invalide Merkle Proof because user isnt on the list', async () => {
+      const merkleProof = [
+        '0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c95',
+      ];
+
+      const params = {
+        value: ethers.utils.parseUnits('.069', 'ether'),
+      };
+
+      expect(
+        Contract.connect(addr1).whiteListMint(merkleProof, 1, params)
+      ).to.be.revertedWith('Invalid Merkle Proof');
     });
   });
 
@@ -306,8 +319,6 @@ describe('Testing NFT2 Contract', () => {
       expect(Contract.tokenURI(nonExTokenId)).to.be.revertedWith(
         'ERC721Metadata: URI query for nonexistent token'
       );
-      console.log(addr1.address);
-      console.log(addr2.address);
     });
   });
 });

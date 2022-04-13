@@ -6,7 +6,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 
-contract NFT2 is ERC721, Ownable {
+contract NFTMEME2 is ERC721, Ownable {
   using Strings for uint256;
   using Counters for Counters.Counter;
 
@@ -20,10 +20,10 @@ contract NFT2 is ERC721, Ownable {
   bool public paused = false;
 
   bytes32 public merkleRoot =
-    0xb01c8d2c189a0bf9b45e2f10ba27479dad70041e840155aef75aa282e09913f7; //NEED TO ADD
+    0x343750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436; //NEED TO ADD
   mapping(address => bool) public whitelistClaimed;
 
-  constructor() ERC721('NAME', 'SYMBOL') {
+  constructor() ERC721('NFF33T', 'F33T') {
     setUriPrefix(uriPrefix); //NEED TO CHANGE
   }
 
@@ -62,7 +62,7 @@ contract NFT2 is ERC721, Ownable {
     require(!paused, 'The contract is paused');
     require(!whitelistClaimed[msg.sender], 'Address already claimed');
 
-    bytes32 leaf = keccak256(abi.encode(msg.sender));
+    bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
     require(
       MerkleProof.verify(_merkleProof, merkleRoot, leaf),
       'Invalide Merkle Proof'

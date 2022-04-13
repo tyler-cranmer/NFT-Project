@@ -15,8 +15,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const NFFeet = await deploy(contract_name, {
     from: deployer,
     args: [
-      'DeezNuts',
-      'Nutz',
+      'TempName',
+      'TempTokenAbbr',
       'ipfs://QmSXYMJqC1UBwJ3ZRVWThc9eoV5y2UvDNxnCbxjSUK8Lut/', // -> ipfs://{metadata CID}/ <-
     ],
     log: true,

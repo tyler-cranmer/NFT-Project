@@ -184,6 +184,13 @@ describe('Testing NFT2 Contract', () => {
         Contract.connect(addr1).whiteListMint(merkleProof, 1, params)
       ).to.be.revertedWith('Invalid Merkle Proof');
     });
+
+    it('Should change merkle root', async () => {
+      const newMerkleRoot = '0x143750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436';
+      await Contract.connect(owner).setMerkleRoot(newMerkleRoot)
+      const merkleRoot = await Contract.merkleRoot()
+      expect(merkleRoot).to.equal(newMerkleRoot)
+    })
   });
 
   describe('Setter Functions', async () => {
@@ -322,3 +329,6 @@ describe('Testing NFT2 Contract', () => {
     });
   });
 });
+
+
+// 0x343750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436

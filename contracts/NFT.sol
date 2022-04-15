@@ -9,7 +9,7 @@ contract NFTMEME is ERC721Enumerable, Ownable {
 
   string baseURI;
   string public baseExtension = '.json';
-  uint256 public cost = 0.069 ether;
+  uint256 public cost = 0.02 ether;
   uint256 public maxSupply = 6969;
   uint256 public maxMintAmount = 15;
   bool public paused = false;

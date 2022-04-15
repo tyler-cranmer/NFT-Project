@@ -6,7 +6,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
 
-contract NFTMEME2 is ERC721, Ownable {
+contract test0x is ERC721, Ownable {
   using Strings for uint256;
   using Counters for Counters.Counter;
 
@@ -20,11 +20,11 @@ contract NFTMEME2 is ERC721, Ownable {
   bool public paused = false;
 
   bytes32 public merkleRoot =
-    0x343750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436; //NEED TO ADD
+    0x53c4e5e25bcbb26b82784b9793d8a74a02719aabab34c2d0358b26231e2f4bbe; //NEED TO ADD
   mapping(address => bool) public whitelistClaimed;
 
-  constructor() ERC721('NFF33T', 'F33T') {
-    setUriPrefix(uriPrefix); //NEED TO CHANGE
+  constructor() ERC721('test0x', 't0x') {
+    setUriPrefix('ipfs://QmdsHvfVX3EzXAzQMq7GYpGcaVSKm8YzqbBXmaDUwK3jUC/'); //NEED TO CHANGE
   }
 
   modifier mintCompliance(uint256 _mintAmount) {
@@ -182,5 +182,9 @@ contract NFTMEME2 is ERC721, Ownable {
 
   function _baseURI() internal view virtual override returns (string memory) {
     return uriPrefix;
+  }
+
+  function setMerkleRoot(bytes32 _newMerkleRoot) public onlyOwner {
+    merkleRoot = _newMerkleRoot;
   }
 }

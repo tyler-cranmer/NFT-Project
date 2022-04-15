@@ -14,11 +14,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // deploys contract
   const NFFeet = await deploy(contract_name, {
     from: deployer,
-    args: [
-      'TempName',
-      'TempTokenAbbr',
-      'ipfs://QmSXYMJqC1UBwJ3ZRVWThc9eoV5y2UvDNxnCbxjSUK8Lut/', // -> ipfs://{metadata CID}/ <-
-    ],
+    // args: [
+    //   'test0x',
+    //   'ox',
+    //   'ipfs://QmdsHvfVX3EzXAzQMq7GYpGcaVSKm8YzqbBXmaDUwK3jUC/', // -> ipfs://{metadata CID}/ <-
+    // ],
     log: true,
   });
 
@@ -36,7 +36,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   );
 
   const networkName = networkConfig[chainId]['name'];
-  log(
-    `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address} "${NFFeet.args[0]}" "${NFFeet.args[1]}" "${NFFeet.args[2]}"`
-  );
+
+  // v1 contract
+  // log(
+  //   `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address} "${NFFeet.args[0]}" "${NFFeet.args[1]}" "${NFFeet.args[2]}"`
+  // );
+
+  // v2 contract
+    log(
+      `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address}`
+    );
 };

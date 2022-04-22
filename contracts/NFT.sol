@@ -139,27 +139,4 @@ contract NFTMEME is ERC721Enumerable, Ownable {
     to.transfer(address(this).balance);
   }
 
-  // function setRoyalties(
-  //   uint256 _tokenId,
-  //   address payable _royaltiesRecipientAddress,
-  //   uint96 _percentageBasisPoints
-  // ) public onlyOwner {
-  //   LibPart.Part[] memory _royalties = new LibPart.Part[](1);
-  //   _royalties[0].value = _percentageBasisPoints;
-  //   _royalties[0].account = _royaltiesRecipientAddress;
-  //   _saveRoyalties(_tokenId, _royalties);
-  // }
 
-  // function supportsInterface(bytes4 interfaceId)
-  //   public
-  //   view
-  //   virtual
-  //   override(ERC721)
-  //   returns (bool)
-  // {
-  //   if (interfaceId == LibRoyaltiesV2._INTERFACE_ID_ROYALTIES) {
-  //     return true;
-  //   }
-  //   return super.supportsInterface(interfaceId);
-  // }
-}

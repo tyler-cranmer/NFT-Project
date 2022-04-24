@@ -4,10 +4,10 @@ This is the backend to my fullstack NFT project. You will find two different con
 
 ## Installation
 
-Run yarn in the terminal
+Run npm i in the terminal
 
 ```shell
-npx i 
+npm i 
 ```
 
 After all the dependencies download, try running some of the following tasks:

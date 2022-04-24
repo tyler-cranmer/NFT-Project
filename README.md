@@ -2,6 +2,8 @@
 
 This is the backend to my fullstack NFT project. You will find two different contracts that were developed for different purposes. NFT.sol consist of a standard NFT smart contract and NFT2.sol that utilizes more complex code including a merkle tree white listing implementation. 
 
+The NFT randomization code can be found in nft_generator repository and the code for the react frontend is currently private. 
+
 ## Installation
 
 Run npm i in the terminal

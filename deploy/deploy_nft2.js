@@ -3,7 +3,7 @@ let { networkConfig } = require('../helper-hardhat-config');
 
 require('dotenv').config();
 
-const contract_name = process.env.CONTRACT1_NAME;
+const contract_name = process.env.CONTRACT2_NAME;
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy, log } = deployments;
@@ -14,11 +14,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // deploys contract
   const NFFeet = await deploy(contract_name, {
     from: deployer,
-    args: [
-      'test0x',
-      'ox',
-      'ipfs://QmdsHvfVX3EzXAzQMq7GYpGcaVSKm8YzqbBXmaDUwK3jUC/', // -> ipfs://{metadata CID}/ <-
-    ],
     log: true,
   });
 
@@ -37,9 +32,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const networkName = networkConfig[chainId]['name'];
 
-  // v1 contract
+  // v2 contract
   log(
-    `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address} "${NFFeet.args[0]}" "${NFFeet.args[1]}" "${NFFeet.args[2]}"`
+    `\n Verify with: \n npx hardhat verify --network ${networkName} ${tNFTcontract.address}`
   );
-
 };

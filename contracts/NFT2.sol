@@ -144,26 +144,6 @@ contract test0x is ERC721, Ownable {
     paused = _state;
   }
 
-  function getUriPrefix() public view returns (string memory) {
-    return uriPrefix;
-  }
-
-  function getUriSuffix() public view returns (string memory) {
-    return uriSuffix;
-  }
-
-  function getCost() public view returns (uint256) {
-    return cost;
-  }
-
-  function getMaxSupply() public view returns (uint256) {
-    return maxSupply;
-  }
-
-  function getMaxMintAmount() public view returns (uint256) {
-    return maxMintAmount;
-  }
-
   function isPaused() public view returns (bool) {
     return paused;
   }

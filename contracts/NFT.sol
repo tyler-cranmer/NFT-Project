@@ -138,6 +138,4 @@ contract NFTMEME is ERC721Enumerable, Ownable {
     address payable to = payable(owner());
     to.transfer(address(this).balance);
   }
-
-
 }

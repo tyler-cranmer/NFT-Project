@@ -14,7 +14,7 @@ describe('Testing NFT2 Contract', () => {
   let addrs;
 
   beforeEach(async () => {
-    factory = await ethers.getContractFactory('NFF33T');
+    factory = await ethers.getContractFactory('test0x');
     Contract = await factory.deploy();
 
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();

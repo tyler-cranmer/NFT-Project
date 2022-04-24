@@ -65,7 +65,7 @@ Compilation finished successfully
     Other Functions
       ✓ Should transfer NFT balance to owner.
       ✓ Should return error when calling withdraw() funds and they are not the owner.
-      ✓ Should return the Buyer's token IDs.
+      ✓ Should return the Buyers token IDs.
       ✓ Should return an empty array if the Owners address has no tokenIds.
       ✓ Should return token URI (40ms)
       ✓ Should return error that for nonexisting token
@@ -138,3 +138,24 @@ All files   |      100 |    94.12 |      100 |      100 |                |
 ------------|----------|----------|----------|----------|----------------|
 ```
 I am not entirely sure why NFT2.sol %Branch is 88.89, because I have tested everything I could think of. Potentially the modifier functions are bringing down the score. With that said, all normal functions have been tested. 
+
+
+## Deploy
+
+Before deployment, copy environment variables from .sampleenv into .env and fill out required credentials.
+
+Deploying to testnet, run hardhat deploy in terminal. 
+
+```shell
+npx hardhat deploy
+```
+
+```shell
+--------------------------------------
+deploying "NFTMEME" (tx: 0xfaf730acc5c2d3de3519d681b717193d62c59b0b40a37dc37c45882bc8bb90c8)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 4160009 gas
+You deployed a NFT contract to 0x5FbDB2315678afecb367f032d93F642f64180aa3
+The deployer address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
+ Verify with: 
+ npx hardhat verify --network localhost 0x5FbDB2315678afecb367f032d93F642f64180aa3 "test0x" "ox" "ipfs://QmdsHvfVX3EzXAzQMq7GYpGcaVSKm8YzqbBXmaDUwK3jUC/"
+ ```

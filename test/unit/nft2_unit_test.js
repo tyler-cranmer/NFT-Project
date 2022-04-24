@@ -26,7 +26,9 @@ describe('Testing NFT2 Contract', () => {
     });
 
     it('Should set the right prefixURI', async function () {
-      expect((await Contract.getUriPrefix()).toString()).to.equal('');
+      expect((await Contract.getUriPrefix()).toString()).to.equal(
+        'ipfs://QmdsHvfVX3EzXAzQMq7GYpGcaVSKm8YzqbBXmaDUwK3jUC/'
+      );
     });
 
     it('Should return the right uriSuffix', async () => {
@@ -159,12 +161,18 @@ describe('Testing NFT2 Contract', () => {
   describe('White List Minting', async () => {
     it('Should accept address1 into white listing', async () => {
       const merkleProof = [
-        '0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94',
+        '0x5931b4ed56ace4c46b68524cb5bcbf4195f1bbaacbe5228fbd090546c88dd229',
+        '0x4f8308e80fa9f9e268915ace55f8dc6e48c90e365d07b1489b7462d5c3fbc1bc',
+        '0x4726e4102af77216b09ccd94f40daa10531c87c4d60bba7f3b3faf5ff9f19b3c',
       ];
 
+      await Contract.setMerkleRoot(
+        '0x5cc050dfd0bf4853c04d6b2c22077e65c88ad249186d69ad44d07a3846932b62'
+      );
       const params = {
         value: ethers.utils.parseUnits('.069', 'ether'),
       };
+
       await Contract.connect(addr1).whiteListMint(merkleProof, 1, params);
       const OwnerBalance = await Contract.balanceOf(addr1.address);
       const newMintNumber = await Contract.totalSupply();
@@ -173,7 +181,9 @@ describe('Testing NFT2 Contract', () => {
 
     it('Should return Invalide Merkle Proof because user isnt on the list', async () => {
       const merkleProof = [
-        '0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c95',
+        '0x5931b4ed56ace4c46b68524cb5bcbf4195f1bbaacbe5228fbd090546c88dd229',
+        '0x4f8308e80fa9f9e268915ace55f8dc6e48c90e365d07b1489b7462d5c3fbc1bc',
+        '0x4726e4102af77216b09ccd94f40daa10531c87c4d60bba7f3b3faf5ff9f19b3c',
       ];
 
       const params = {
@@ -182,15 +192,16 @@ describe('Testing NFT2 Contract', () => {
 
       expect(
         Contract.connect(addr1).whiteListMint(merkleProof, 1, params)
-      ).to.be.revertedWith('Invalid Merkle Proof');
+      ).to.be.reverted;
     });
 
     it('Should change merkle root', async () => {
-      const newMerkleRoot = '0x143750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436';
-      await Contract.connect(owner).setMerkleRoot(newMerkleRoot)
-      const merkleRoot = await Contract.merkleRoot()
-      expect(merkleRoot).to.equal(newMerkleRoot)
-    })
+      const newMerkleRoot =
+        '0x143750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436';
+      await Contract.connect(owner).setMerkleRoot(newMerkleRoot);
+      const merkleRoot = await Contract.merkleRoot();
+      expect(merkleRoot).to.equal(newMerkleRoot);
+    });
   });
 
   describe('Setter Functions', async () => {
@@ -329,6 +340,5 @@ describe('Testing NFT2 Contract', () => {
     });
   });
 });
-
 
 // 0x343750465941b29921f50a28e0e43050e5e1c2611a3ea8d7fe1001090d5e1436

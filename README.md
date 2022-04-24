@@ -1,6 +1,6 @@
 # NFT Solidity Project in Hardhat
 
-This is the backend to my fullstack NFT project. You will find two different contracts that are developed for different purposes. NFT.sol consist of a standard NFT smart contract and NFT2.sol that utilizes more complex code including a merkle tree white listing implementation. 
+This is the backend to my fullstack NFT project. You will find two different contracts that were developed for different purposes. NFT.sol consist of a standard NFT smart contract and NFT2.sol that utilizes more complex code including a merkle tree white listing implementation. 
 
 ## Installation
 
@@ -120,3 +120,21 @@ Compilation finished successfully
 
   68 passing (6s)
 ```
+Running hardhat coverage will show the percentage of the contracts that has been tested. 
+
+```shell
+npx hardhat coverage
+```
+
+```shell
+------------|----------|----------|----------|----------|----------------|
+File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+------------|----------|----------|----------|----------|----------------|
+ contracts/ |      100 |    94.12 |      100 |      100 |                |
+  NFT.sol   |      100 |      100 |      100 |      100 |                |
+  NFT2.sol  |      100 |    88.89 |      100 |      100 |                |
+------------|----------|----------|----------|----------|----------------|
+All files   |      100 |    94.12 |      100 |      100 |                |
+------------|----------|----------|----------|----------|----------------|
+```
+I am not entirely sure why NFT2.sol %Branch is 88.89, because I have tested everything I could think of. Potentially the modifier functions are bringing down the score. With that said, all normal functions have been tested. 
